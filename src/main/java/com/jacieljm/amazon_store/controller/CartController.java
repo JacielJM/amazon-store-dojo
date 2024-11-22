@@ -27,9 +27,15 @@ public class CartController {
         return cart.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/{cartId}/products/{productId}")
-    public ResponseEntity<Cart> addProductToCart(@PathVariable Long cartId, @PathVariable Long productId) {
-        Cart cart = cartService.addProductToCart(cartId, productId);
+    @GetMapping("/get")
+    public ResponseEntity<Cart> getCartBySessionId(@RequestParam String sessionId) {
+        Optional<Cart> cart = cartService.getCartBySessionId(sessionId);
+        return cart.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/{sessionId}/products/{productId}")
+    public ResponseEntity<Cart> addProductToCart(@PathVariable String sessionId, @PathVariable Long productId) {
+        Cart cart = cartService.addProductToCart(sessionId, productId);
         if (cart != null) {
             return ResponseEntity.ok(cart);
         } else {
@@ -37,9 +43,13 @@ public class CartController {
         }
     }
 
-    @DeleteMapping("/{cartId}/products/{productId}")
-    public ResponseEntity<Void> removeProductFromCart(@PathVariable Long cartId, @PathVariable Long productId) {
-        cartService.removeProductFromCart(cartId, productId);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/{sessionId}/products/{productId}")
+    public ResponseEntity<Cart> removeProductFromCart(@PathVariable String sessionId, @PathVariable Long productId) {
+        Cart cart = cartService.removeProductFromCart(sessionId, productId);
+        if (cart != null) {
+            return ResponseEntity.ok(cart);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

@@ -28,8 +28,12 @@ public class CartService {
         return cartRepository.findById(id);
     }
 
-    public Cart addProductToCart(Long cartId, Long productId) {
-        Optional<Cart> cart = cartRepository.findById(cartId);
+    public Optional<Cart> getCartBySessionId(String sessionId) {
+        return cartRepository.findBySessionId(sessionId);
+    }
+
+    public Cart addProductToCart(String sessionId, Long productId) {
+        Optional<Cart> cart = cartRepository.findBySessionId(sessionId);
         Optional<Product> product = productRepository.findById(productId);
         if (cart.isPresent() && product.isPresent()) {
             cart.get().getProducts().add(product.get());
@@ -38,12 +42,13 @@ public class CartService {
         return null;
     }
 
-    public void removeProductFromCart(Long cartId, Long productId) {
-        Optional<Cart> cart = cartRepository.findById(cartId);
+    public Cart removeProductFromCart(String sessionId, Long productId) {
+        Optional<Cart> cart = cartRepository.findBySessionId(sessionId);
         Optional<Product> product = productRepository.findById(productId);
         if (cart.isPresent() && product.isPresent()) {
             cart.get().getProducts().remove(product.get());
-            cartRepository.save(cart.get());
+            return cartRepository.save(cart.get());
         }
+        return null;
     }
 }
