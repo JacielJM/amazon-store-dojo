@@ -3,8 +3,8 @@ package com.jacieljm.amazon_store.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "cart")
 @Data
@@ -20,5 +20,9 @@ public class Cart {
             joinColumns = @JoinColumn(name = "cart_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
-    private Set<Product> products = new HashSet<>();
+    private List<Product> products;
+
+    public Cart() {
+        this.products = new ArrayList<>();
+    }
 }
